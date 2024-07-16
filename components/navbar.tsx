@@ -7,26 +7,14 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
   Button,
 } from "@nextui-org/react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
   return (
     <>
       <Navbar onMenuOpenChange={setIsMenuOpen}>
@@ -35,29 +23,16 @@ export default function NavBar() {
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           />
           <NavbarBrand>
-            <p className="font-bold text-inherit">SIGMA</p>
+            <Link href="/" className="font-bold text-inherit">
+              SIGMA
+            </Link>
           </NavbarBrand>
         </NavbarContent>
 
         <NavbarMenu>
-          {menuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === menuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                className="w-full"
-                href="#"
-                size="lg"
-              >
-                {item}
-              </Link>
-            </NavbarMenuItem>
-          ))}
+          <NavbarMenuItem>
+            <Link className="w-full" href="#"></Link>
+          </NavbarMenuItem>
         </NavbarMenu>
       </Navbar>
     </>
