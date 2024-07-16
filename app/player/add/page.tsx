@@ -2,7 +2,6 @@
 import { createClient } from "@/utils/supabase/client";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { useFormStatus } from "react-dom";
 
 export default function Page() {
   const supabase = createClient();
@@ -18,18 +17,17 @@ export default function Page() {
     getTeams();
   }, [supabase]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    fetch("/api/users", {
+    fetch("/api/players", {
       method: "POST",
       body: JSON.stringify({ name: playerName, team_id: teamId }),
     })
       .then((res) => res.json())
       .then((data) => {
         setIsLoading(false);
-        console.log(data);
         setPlayerName("");
         setTeamId(undefined);
       });
