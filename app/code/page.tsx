@@ -35,7 +35,6 @@ const AddCodeForm = () => {
         className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4"
       >
         <Input name="score" label="Điểm" />
-        <Input name="code" hidden />
         <SubmitButton />
       </form>
     </>
