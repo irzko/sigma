@@ -1,19 +1,12 @@
-import { teams } from "@prisma/client";
-
-const getTeams = async () => {
-  const res = await fetch("/api/teams", {
-    cache: "no-store",
-  });
-  const data = await res.json();
-  return data;
-};
+import { createClient } from "@/utils/supabase/server";
 
 export default async function Page() {
-  const teams: teams[] = await getTeams();
+  const supabase = createClient();
+  const { data: teams, error } = await supabase.from("teams").select("*");
   return (
     <main>
       <ul>
-        {teams.map((team) => (
+        {teams?.map((team) => (
           <li key={team.id}>{team.name}</li>
         ))}
       </ul>
