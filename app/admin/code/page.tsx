@@ -21,7 +21,8 @@ const AddCodeForm = () => {
 
 const getCodes = async (): Promise<codes[]> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/codes`, {
-    next: { tags: ["code"] },
+    // next: { tags: ["code"] },
+    cache: "no-store",
   });
   const data = await res.json();
   return data;
