@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { addScore } from "../action";
 
-export function SubmitButton() {
+function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
