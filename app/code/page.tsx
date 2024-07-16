@@ -1,31 +1,9 @@
-"use client";
+import { Input } from "@nextui-org/react";
 
-import { createClient } from "@/utils/supabase/client";
-import {
-  getKeyValue,
-  Input,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  Button,
-} from "@nextui-org/react";
-
-import { useEffect, useState } from "react";
-import { useFormStatus } from "react-dom";
 import { addScore } from "../action";
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button color="primary" type="submit" disabled={pending}>
-      Thêm
-    </Button>
-  );
-}
+import { codes } from "@prisma/client";
+import TableCode from "./components/TableCode";
+import SubmitButton from "@/components/SubmitButton";
 
 const AddCodeForm = () => {
   return (
@@ -34,59 +12,29 @@ const AddCodeForm = () => {
         action={addScore}
         className="flex w-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4"
       >
-        <Input name="score" label="Điểm" />
+        <Input size="sm" name="score" label="Điểm" />
         <SubmitButton />
       </form>
     </>
   );
 };
 
-export default function Page() {
-  const supabase = createClient();
-  const [codes, setCodes] = useState<
-    {
-      id: number;
-      code: string;
-    }[]
-  >([]);
-  useEffect(() => {
-    const getCodes = async () => {
-      const { data: codes, error } = await supabase
-        .from("codes")
-        .select("*")
-        .order("id");
-      if (codes) {
-        setCodes(
-          codes.map((code) => ({
-            id: code.id,
-            code: code.code,
-          }))
-        );
-      }
-    };
-    getCodes();
-  }, [supabase]);
+const getCodes = async (): Promise<codes[]> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/codes`, {
+    next: { tags: ["code"] },
+  });
+  const data = await res.json();
+  return data;
+};
+
+export default async function Page() {
+  const codes = await getCodes();
 
   return (
     <main className="flex justify-center">
       <div className="max-w-screen-md w-full">
         <AddCodeForm />
-        <Table aria-label="Example table with dynamic content">
-          <TableHeader>
-            <TableColumn key="id">ID</TableColumn>
-            <TableColumn key="name">Mã</TableColumn>
-            {/* <TableColumn key="score">Trạng thái</TableColumn> */}
-          </TableHeader>
-          <TableBody items={codes}>
-            {(item) => (
-              <TableRow key={item.id}>
-                {(columnKey) => (
-                  <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        <TableCode codes={codes} />
       </div>
     </main>
   );

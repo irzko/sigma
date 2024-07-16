@@ -2,7 +2,8 @@
 
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { createClient } from "@/utils/supabase/server";
+import { randomCode } from "@/lib/randomCode";
+import { revalidateTag } from "next/cache";
 
 export const createPlayer = async (formData: FormData) => {
   const player = await prisma.players.create({
@@ -22,21 +23,12 @@ export const createPlayer = async (formData: FormData) => {
 };
 
 export const addScore = async (formData: FormData) => {
-  const supabase = createClient();
-  function taoChuoiNgauNhien() {
-    const chuoiKiTu = "0123456789";
-    let chuoi = "";
-    for (let i = 0; i < 5; i++) {
-      const randomIndex = Math.floor(Math.random() * chuoiKiTu.length);
-      chuoi += chuoiKiTu[randomIndex];
-    }
-    return chuoi;
-  }
-  const { data, error } = await supabase.from("scores").insert([
-    {
-      code: taoChuoiNgauNhien(),
+  await prisma.codes.create({
+    data: {
+      code: randomCode(),
       score: parseInt(formData.get("score") as string),
     },
-  ]);
+  });
+  revalidateTag("code");
   redirect("/code");
 };

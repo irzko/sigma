@@ -9,35 +9,32 @@ datasource db {
 }
 
 model teams {
-  id         BigInt    @id(map: "team_pkey") @default(autoincrement())
+  id         Int       @id(map: "team_pkey") @default(autoincrement())
   created_at DateTime  @default(now()) @db.Timestamptz(6)
   name       String?
   users      players[]
 }
 
 model players {
-  id         BigInt       @id @default(autoincrement())
-  created_at DateTime     @default(now()) @db.Timestamptz(6)
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
   name       String?
-  team_id    BigInt?
-  score      BigInt?      @default(0)
-  teams      teams?       @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  used_codes used_codes[]
+  team_id    Int?
+  score      Int?
+  teams      teams?   @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model codes {
-  id         BigInt       @id @default(autoincrement())
-  created_at DateTime     @default(now()) @db.Timestamptz(6)
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
   code       String?
-  score      BigInt?      @default(0)
-  used_codes used_codes[]
+  score      Int?
+  is_used    Boolean  @default(false)
 }
 
 model used_codes {
-  id         BigInt   @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   created_at DateTime @default(now()) @db.Timestamptz(6)
-  code_id    BigInt?
-  user_id    BigInt?
-  codes      codes?   @relation(fields: [code_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  users      players? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  code_id    Int?
+  user_id    Int?
 }
